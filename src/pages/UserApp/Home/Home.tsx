@@ -28,7 +28,7 @@ function Home() {
   return (
     <HomePageWrapper>
       <UserForm onSubmit={formik.handleSubmit}>
-        <UserFormName>Create User</UserFormName>
+        <UserFormName>Authorization / Create User</UserFormName>
 
         <label>
           First/Last name

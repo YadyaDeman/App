@@ -5,7 +5,7 @@ export const HomePageWrapper = styled.div`
   flex: 1;
   justify-content: center;
   align-items: center;
-`
+ `
 
 export const UserForm = styled.form`
   display: flex;
