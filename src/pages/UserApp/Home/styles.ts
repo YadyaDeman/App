@@ -18,7 +18,7 @@ export const UserForm = styled.form`
   max-width: 400px;
   min-height: auto;
   height: auto;  
-  padding: 5px;
+  padding: 0px;
   //border-radius: 4px;
   //border: 2px solid hsla(209, 26%, 22%, 0.808);
   //background-color: white;
@@ -26,7 +26,7 @@ export const UserForm = styled.form`
 
 // Styling for the form title
 export const UserFormName = styled.p`
-  font-size: 25px;
+  font-size: 20px;
   font-weight: bold;
   color: #0e2936;
   text-align: center;

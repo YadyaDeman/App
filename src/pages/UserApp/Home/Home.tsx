@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { HomePageWrapper, UserForm, UserFormName } from "./styles";
 
-//  form - interface /
+// Form interface to define the structure of the form values
 interface UserFormValues {
   firstlastName: string;
   email: string;
@@ -12,15 +12,58 @@ interface UserFormValues {
 }
 
 function Home() {
-  /*Regex- использовать например- const-error и if 
-  и если ввод неверный, появляется сообщение красным цветом!
-   Имя – только буквы, пробелы и дефисы.
-   Email - корректный формат example@mail.com.
-   Номер телефона - только цифры, минимум 10 символов.
-   Пароль - минимум 8 символов, 1 буква, 1 цифра, 1 спецсимвол.
-   Подтверждение пароля - совпадает ли с паролем.*/
+  // Validation function for the form inputs
+  const validate = (values: UserFormValues) => {
+    const errors: Partial<UserFormValues> = {};
 
-  // Initialize formik -useFormik, with form values and submit handler / 
+    // Regex - name
+    const nameRegex = /^[A-Za-z\s-]+$/;
+    if (!values.firstlastName) {
+      errors.firstlastName = "Enter your fullname";
+    } else if (!nameRegex.test(values.firstlastName)) {
+      errors.firstlastName = "Only letters, spaces, and hyphens allowed";
+    }
+
+    // Regex - email format
+    const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+    if (!values.email) {
+      errors.email = "Enter your email";
+    } else if (!emailRegex.test(values.email)) {
+      errors.email = "Invalid email address";
+    }
+
+    // Regex - validating phone number
+    const phoneRegex = /^\d{7,}$/;
+    if (!values.phoneNumber) {
+      errors.phoneNumber = "Enter your phone number";
+    } else if (!phoneRegex.test(values.phoneNumber)) {
+      errors.phoneNumber = "Only numbers allowed, minimum 7 digits";
+    }
+
+    // Regex - password validation)
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!values.password) {
+      errors.password = "Enter your password";
+    } else if (!passwordRegex.test(values.password)) {
+      errors.password = "Password must be at least 8 characters, include 1 letter, 1 number, and 1 special character";
+    }
+
+    // confirming password match
+    if (!values.confirmPassword) {
+      errors.confirmPassword = "Confirm your password";
+    } else if (values.password !== values.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    // role selection
+    if (!values.role) {
+      errors.role = "Select your role";
+    }
+
+    return errors;
+  };
+
+  // formik - values, validation
   const formik = useFormik<UserFormValues>({
     initialValues: {
       firstlastName: "",
@@ -30,6 +73,7 @@ function Home() {
       confirmPassword: "",
       role: "",
     },
+    validate,
     onSubmit: (values) => {
       console.log("Form submitted with values:", values);
     },
@@ -40,72 +84,29 @@ function Home() {
       <UserForm onSubmit={formik.handleSubmit}>
         <UserFormName>Create User</UserFormName>
 
-        {/* Input for First/Last Name */}
-        <label>
-          First/Last name
-          <input
-            type="text"
-            name="firstlastName"
-            placeholder="Enter your fullname"
-            value={formik.values.firstlastName}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-        </label>
+        {/* form fields dynamically */}
+        {[
+          { label: "First/Last name", name: "firstlastName", type: "text", placeholder: "Enter your fullname" },
+          { label: "Email", name: "email", type: "email", placeholder: "Enter your email" },
+          { label: "Phone number", name: "phoneNumber", type: "tel", placeholder: "Enter your phone number" },
+          { label: "Password", name: "password", type: "password", placeholder: "Enter your password" },
+          { label: "Confirm password", name: "confirmPassword", type: "password", placeholder: "Confirm your password" },
+        ].map(({ label, name, type, placeholder }) => (
+          <label key={name}>
+            {label}
+            <input type={type} name={name} placeholder={placeholder} value={formik.values[name as keyof UserFormValues]}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
 
-        {/* Input for Email  */}
-        <label>
-          Email
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-        </label>
+            {/* validation error messages */}
+            {formik.touched[name as keyof UserFormValues] && formik.errors[name as keyof UserFormValues] && (
+              <p style={{ color: "red" }}>{formik.errors[name as keyof UserFormValues]}</p>
+            )}
+          </label>
+        ))}
 
-        {/* Input for Phone Number */}
-        <label>
-          Phone number
-          <input
-            type="tel"
-            name="phoneNumber"
-            placeholder="Enter your phone number"
-            value={formik.values.phoneNumber}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-        </label>
-
-        {/* Input for Password */}
-        <label>
-          Password
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-        </label>
-
-        {/* Input for Confirm Password */}
-        <label>
-          Confirm password
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm your password"
-            value={formik.values.confirmPassword}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-        </label>
-
-        {/* Dropdown for Role Selection  */}
+        {/* Dropdown for selecting user role */}
         <label>
           Select your role
           <select
@@ -115,19 +116,17 @@ function Home() {
             onBlur={formik.handleBlur}
           >
             <option value="" disabled>Select your role</option>
-            <option value="Подрядчик">Подрядчик</option>
-            <option value="Заместитель директора">Заместитель директора</option>
-            <option value="Руководитель проекта">Руководитель проекта</option>
-            <option value="Начальник участка">Начальник участка</option>
-            <option value="Старший прораб">Старший прораб</option>
-            <option value="Прораб">Прораб</option>
-            <option value="Мастер">Мастер</option>
-            <option value="Бригадир">Бригадир</option>
-            <option value="Исполнитель">Исполнитель</option>
+            {["Подрядчик", "Заместитель директора", "Руководитель проекта", "Начальник участка", "Старший прораб", "Прораб", "Мастер", "Бригадир", "Исполнитель"].map((role) => (
+              <option key={role} value={role}>{role}</option>
+            ))}
           </select>
+          {/* validation error message for role */}
+          {formik.touched.role && formik.errors.role && (
+            <p style={{ color: "red" }}>{formik.errors.role}</p>
+          )}
         </label>
 
-        {/* Submit Button  */}
+        {/* Submit button */}
         <button type="submit">Create</button>
       </UserForm>
     </HomePageWrapper>
