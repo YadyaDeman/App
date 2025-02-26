@@ -1,26 +1,34 @@
 import styled from "@emotion/styled"
 
+// Container for the page
 export const HomePageWrapper = styled.div`
   display: flex;
   flex: 1;
   justify-content: center;
   align-items: center;
- `
 
+ `;
+ 
+ // Styling for the user form container
 export const UserForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  min-width: 500px;
-  min-height: 300px;
-  height: fit-content;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid black;
-`
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  min-height: auto;
+  height: auto;  
+  padding: 5px;
+  //border-radius: 4px;
+  //border: 2px solid hsla(209, 26%, 22%, 0.808);
+  //background-color: white;
+`;
 
+// Styling for the form title
 export const UserFormName = styled.p`
-  font-size: 24px;
+  font-size: 25px;
   font-weight: bold;
   color: #0e2936;
-`
+  text-align: center;
+  `;
+

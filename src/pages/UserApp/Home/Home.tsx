@@ -1,6 +1,7 @@
 import { useFormik } from "formik";
 import { HomePageWrapper, UserForm, UserFormName } from "./styles";
 
+//  form - interface /
 interface UserFormValues {
   firstlastName: string;
   email: string;
@@ -11,6 +12,15 @@ interface UserFormValues {
 }
 
 function Home() {
+  /*Regex- использовать например- const-error и if 
+  и если ввод неверный, появляется сообщение красным цветом!
+   Имя – только буквы, пробелы и дефисы.
+   Email - корректный формат example@mail.com.
+   Номер телефона - только цифры, минимум 10 символов.
+   Пароль - минимум 8 символов, 1 буква, 1 цифра, 1 спецсимвол.
+   Подтверждение пароля - совпадает ли с паролем.*/
+
+  // Initialize formik -useFormik, with form values and submit handler / 
   const formik = useFormik<UserFormValues>({
     initialValues: {
       firstlastName: "",
@@ -28,8 +38,9 @@ function Home() {
   return (
     <HomePageWrapper>
       <UserForm onSubmit={formik.handleSubmit}>
-        <UserFormName>Authorization / Create User</UserFormName>
+        <UserFormName>Create User</UserFormName>
 
+        {/* Input for First/Last Name */}
         <label>
           First/Last name
           <input
@@ -42,6 +53,7 @@ function Home() {
           />
         </label>
 
+        {/* Input for Email  */}
         <label>
           Email
           <input
@@ -54,6 +66,7 @@ function Home() {
           />
         </label>
 
+        {/* Input for Phone Number */}
         <label>
           Phone number
           <input
@@ -66,6 +79,7 @@ function Home() {
           />
         </label>
 
+        {/* Input for Password */}
         <label>
           Password
           <input
@@ -78,6 +92,7 @@ function Home() {
           />
         </label>
 
+        {/* Input for Confirm Password */}
         <label>
           Confirm password
           <input
@@ -90,6 +105,7 @@ function Home() {
           />
         </label>
 
+        {/* Dropdown for Role Selection  */}
         <label>
           Select your role
           <select
@@ -111,6 +127,7 @@ function Home() {
           </select>
         </label>
 
+        {/* Submit Button  */}
         <button type="submit">Create</button>
       </UserForm>
     </HomePageWrapper>
